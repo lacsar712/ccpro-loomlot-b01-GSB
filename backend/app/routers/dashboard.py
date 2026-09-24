@@ -5,6 +5,7 @@ from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from app.auth import get_current_user
+from app.constants import REQUIRED_RETEST_COUNT
 from app.database import get_db
 from app.models.dye_house import DyeHouse
 from app.models.dye_lot import DyeLot
@@ -38,4 +39,12 @@ def get_stats(
             .scalar()
             or 0
         ),
+        # 与染程列表「未关闭 + 复测未达标」筛选完全同一口径
+        open_retest_unmet_count=(
+            db.query(func.count(DyeLot.id))
+            .filter(DyeLot.open_retest_unmet_criterion())
+            .scalar()
+            or 0
+        ),
+        required_retest_count=REQUIRED_RETEST_COUNT,
     )

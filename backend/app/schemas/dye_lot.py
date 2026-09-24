@@ -33,3 +33,8 @@ class DyeLotOut(BaseModel):
     fabric_kg: float = Field(serialization_alias="fabricKg")
     started_at: datetime = Field(serialization_alias="startedAt")
     operator_name: str = Field(serialization_alias="operatorName")
+    closed_at: Optional[datetime] = Field(None, serialization_alias="closedAt")
+    retest_met: bool = Field(serialization_alias="retestMet")
+    retest_unmet: bool = Field(serialization_alias="retestUnmet")
+    # 未达标（复测次数不足规定次数）的色牢度条数
+    retest_unmet_count: int = Field(serialization_alias="retestUnmetCount")

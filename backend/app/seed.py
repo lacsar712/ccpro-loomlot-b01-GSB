@@ -105,7 +105,9 @@ def seed() -> None:
                         wash_fastness=4,
                         rub_fastness=3.5,
                         temp_c=40.0,
-                        notes="湿摩略偏，可出货",
+                        notes="复测两次达标，可关闭染程",
+                        retest_count=2,
+                        last_retest_at=now - timedelta(minutes=20),
                     ),
                     FastnessCheck(
                         dye_lot_id=lot2.id,
@@ -113,7 +115,9 @@ def seed() -> None:
                         wash_fastness=5,
                         rub_fastness=4.0,
                         temp_c=37.0,
-                        notes=None,
+                        notes="尚未复测，复测未达标，染程不得关闭",
+                        retest_count=0,
+                        last_retest_at=None,
                     ),
                 ]
             )
