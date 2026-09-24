@@ -44,12 +44,20 @@
       <div class="n">{stats.checksLast24h}</div>
       <div class="l">近 24 时抽检</div>
     </div>
+    <div class="stat">
+      <div class="n">{stats.lotsRetestPending}</div>
+      <div class="l">未关闭且复测未达标染程</div>
+    </div>
   </div>
 {/if}
 
 <div class="panel">
   <p style="margin:0 0 0.75rem;color:var(--indigo-mist);font-size:0.9rem;">
-    业务约束：仅当染缸为 <strong>ready</strong> 或 <strong>dyeing</strong> 时可新建染程；新建后染缸自动变为 dyeing。排液可用染缸「完成排液」动作。
+    业务约束：仅当染缸为 <strong>ready</strong> 或 <strong>dyeing</strong> 时可新建染程；新建后染缸自动变为
+    dyeing。排液可用染缸「完成排液」动作。<br />
+    色牢度复测规定次数为常量 <strong>{stats?.requiredRetestCount || 2}</strong>：染程下至少一条抽检复测次数达到
+    {stats?.requiredRetestCount || 2}
+    次才可关闭；关闭后禁止再追加色牢度。上方「未关闭且复测未达标染程」数与染程列表勾选「仅看未关闭且复测未达标」手数结果一致。
   </p>
   <div class="toolbar">
     <a class="btn" href="/houses" use:link>进入染坊</a>

@@ -30,6 +30,9 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
     for err in errors:
         loc = ".".join(str(x) for x in err.get("loc", []) if x != "body")
         msg = err.get("msg", "校验失败")
+        # pydantic model_validator 的 ValueError 会被包成 “Value error, ...”，剥掉英文前缀以返回纯中文。
+        if msg.startswith("Value error, "):
+            msg = msg[len("Value error, ") :]
         messages.append(f"{loc}: {msg}" if loc else msg)
     detail = "; ".join(messages) if messages else "请求参数校验失败"
     return JSONResponse(status_code=400, content={"detail": detail})

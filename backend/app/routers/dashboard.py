@@ -11,6 +11,7 @@ from app.models.dye_lot import DyeLot
 from app.models.fastness_check import FastnessCheck
 from app.models.user import User
 from app.models.vat import Vat
+from app.retest_rules import required_retest_count, retest_pending_lot_ids
 from app.schemas.dashboard import DashboardStats
 
 router = APIRouter(prefix="/api/dashboard", tags=["dashboard"])
@@ -38,4 +39,7 @@ def get_stats(
             .scalar()
             or 0
         ),
+        # 与染程列表「复测未达标」筛选共用 retest_pending_lot_ids，保证两边手数一致。
+        lots_retest_pending=len(retest_pending_lot_ids(db)),
+        required_retest_count=required_retest_count(),
     )

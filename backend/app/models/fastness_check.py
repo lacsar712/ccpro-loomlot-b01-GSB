@@ -2,8 +2,10 @@ from datetime import datetime
 from typing import TYPE_CHECKING, Optional
 
 from sqlalchemy import String, Integer, Float, DateTime, ForeignKey, Text
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
+from app.config import settings
 from app.database import Base
 
 if TYPE_CHECKING:
@@ -20,5 +22,14 @@ class FastnessCheck(Base):
     rub_fastness: Mapped[float] = mapped_column(Float, nullable=False)
     temp_c: Mapped[float] = mapped_column(Float, nullable=False)
     notes: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    # 色牢度复测次数：非负整数，0 表示仅初检未复测。
+    retest_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0, server_default="0")
+    # 末次复测时刻：可空；retest_count > 0 时必填，且不得早于抽检时刻。
+    last_retest_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True), nullable=True)
 
     dye_lot: Mapped["DyeLot"] = relationship("DyeLot", back_populates="fastness_checks")
+
+    @hybrid_property
+    def retest_met(self) -> bool:
+        """本条色牢度复测次数是否达到规定次数。"""
+        return self.retest_count >= settings.retest_target

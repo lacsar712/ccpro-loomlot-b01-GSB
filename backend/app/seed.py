@@ -99,14 +99,19 @@ def seed() -> None:
             v3.status = "ready"
             db.add_all(
                 [
+                    # lot1：复测次数已达规定次数（默认 2），染程仍未关闭，可直接演示关闭动作。
                     FastnessCheck(
                         dye_lot_id=lot1.id,
-                        checked_at=now - timedelta(hours=1),
+                        checked_at=now - timedelta(hours=5),
                         wash_fastness=4,
                         rub_fastness=3.5,
                         temp_c=40.0,
-                        notes="湿摩略偏，可出货",
+                        notes="初检湿摩略偏，复测两轮后稳定",
+                        retest_count=2,
+                        last_retest_at=now - timedelta(hours=3),
                     ),
+                    # lot2：未达标色牢度（复测 0 次）挂在未关闭染程上，
+                    # 看板「未关闭且复测未达标」计数与列表筛选应都能命中该染程。
                     FastnessCheck(
                         dye_lot_id=lot2.id,
                         checked_at=now - timedelta(days=1),
@@ -114,6 +119,8 @@ def seed() -> None:
                         rub_fastness=4.0,
                         temp_c=37.0,
                         notes=None,
+                        retest_count=0,
+                        last_retest_at=None,
                     ),
                 ]
             )
